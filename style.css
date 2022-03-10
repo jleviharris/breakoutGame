@@ -1,0 +1,14 @@
+.grid {
+  position: absolute;
+  width: 95%;
+  height: 650px;
+  border: solid black 1px;
+  align-self: center;
+}
+
+.block {
+  position: absolute;
+  width: 125px;
+  height: 25px;
+  background-color: red;
+}
