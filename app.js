@@ -4,8 +4,11 @@ const grid = document.querySelector('.grid')
     grid.style.bottom = '120px'
 const blockWidth = 125;
 const blockHeight = 25;
-const userStart = [625, 25]
-let currentPosition = userStart
+const userStart = [625, 25];
+let currentPosition = userStart;
+const boardWidth = 1370;
+const ballStart = [625, 48];
+let ballCurrentPosition = ballStart;
 
 //Create Block
 class Block {
@@ -70,8 +73,36 @@ addBlocks();
 //add user
 const user = document.createElement('div')
 user.classList.add('user')
-user.style.left = currentPosition[0] + 'px'
-user.style.bottom = currentPosition[1] + 'px'
-
+drawUser()
 grid.appendChild(user)
 
+
+//draw the user
+function drawUser() {
+    user.style.left = currentPosition[0] + 'px'
+    user.style.bottom = currentPosition[1] + 'px'
+}
+
+//move user
+function moveUser(e){
+    switch(e.key){
+        case 'ArrowLeft':
+            if (currentPosition[0]>10){
+            currentPosition[0] -= 30
+            drawUser()
+            break;}
+        case 'ArrowRight':
+            if (currentPosition[0] < boardWidth - blockWidth - 40){
+            currentPosition[0] += 30
+            drawUser()
+            break;}
+    }
+}
+
+document.addEventListener('keydown', moveUser)
+
+const ball = document.createElement('div')
+ball.classList.add('ball')
+ball.style.left = ballCurrentPosition[0] + 'px'
+ball.style.bottom = ballCurrentPosition[1] + 'px'
+grid.appendChild(ball)
