@@ -7,8 +7,13 @@ const blockHeight = 25;
 const userStart = [625, 25];
 let currentPosition = userStart;
 const boardWidth = 1370;
-const ballStart = [625, 48];
+const boardHeight = 650;
+const ballDiameter = 20;
+const ballStart = [690, 48];
 let ballCurrentPosition = ballStart;
+let timerId;
+let xDirection = 2;
+let yDirection = 2;
 
 //Create Block
 class Block {
@@ -81,6 +86,12 @@ grid.appendChild(user)
 function drawUser() {
     user.style.left = currentPosition[0] + 'px'
     user.style.bottom = currentPosition[1] + 'px'
+};
+
+//Draw the ball
+function drawBall () {
+    ball.style.left = ballCurrentPosition[0] + 'px'
+    ball.style.bottom = ballCurrentPosition[1] + 'px'
 }
 
 //move user
@@ -103,6 +114,44 @@ document.addEventListener('keydown', moveUser)
 
 const ball = document.createElement('div')
 ball.classList.add('ball')
-ball.style.left = ballCurrentPosition[0] + 'px'
-ball.style.bottom = ballCurrentPosition[1] + 'px'
+drawBall()
 grid.appendChild(ball)
+
+//Moving the ball
+function moveBall(){
+    ballCurrentPosition[0] += xDirection
+    ballCurrentPosition[1] += yDirection
+    drawBall()
+    checkForCollisions()
+}
+timerId = setInterval(moveBall, 10)
+
+
+function checkForCollisions (){
+    // wall collisions
+if (ballCurrentPosition[0] >= (boardWidth - ballDiameter) || 
+    ballCurrentPosition[1] >= (boardHeight - ballDiameter)||
+    ballCurrentPosition[0] <= 0 ||
+    ballCurrentPosition[1] <=0 
+    ){
+    changeDirection();
+}
+ 
+}
+
+function changeDirection() {
+    if(xDirection === 2 && yDirection === 2){
+        yDirection = -2
+        return
+    } 
+    if (xDirection === 2 && yDirection === -2){
+        xDirection = -2
+        return
+    } if (xDirection === -2 && yDirection === -2){
+        yDirection = 2
+        return
+    } if (xDirection === -2 && yDirection ===2){
+        xDirection = 2 
+        return
+    }
+}
