@@ -6,15 +6,16 @@ const blockWidth = 125;
 const blockHeight = 25;
 const userStart = [625, 25];
 let currentPosition = userStart;
+const scoreDisplay = document.querySelector('#score');
 const boardWidth = 1370;
 const boardHeight = 650;
 const ballDiameter = 20;
 const ballStart = [690, 48];
 let ballCurrentPosition = ballStart;
 let timerId;
-let xDirection = 2;
-let yDirection = 2;
-
+let xDirection = 3;
+let yDirection = 3;
+let score = 0;
 //Create Block
 class Block {
     constructor(xAxis, yAxis) {
@@ -99,12 +100,12 @@ function moveUser(e){
     switch(e.key){
         case 'ArrowLeft':
             if (currentPosition[0]>10){
-            currentPosition[0] -= 30
+            currentPosition[0] -= 55
             drawUser()
             break;}
         case 'ArrowRight':
             if (currentPosition[0] < boardWidth - blockWidth - 40){
-            currentPosition[0] += 30
+            currentPosition[0] += 55
             drawUser()
             break;}
     }
@@ -129,29 +130,57 @@ timerId = setInterval(moveBall, 10)
 
 function checkForCollisions (){
     // wall collisions
-if (ballCurrentPosition[0] >= (boardWidth - ballDiameter) || 
-    ballCurrentPosition[1] >= (boardHeight - ballDiameter)||
-    ballCurrentPosition[0] <= 0 ||
-    ballCurrentPosition[1] <=0 
-    ){
-    changeDirection();
-}
- 
+for (let i=0; i < blocks.length; i++){
+    if (
+        (ballCurrentPosition[0] > blocks[i].bottomLeft[0] && ballCurrentPosition[0] < blocks[i].bottomRight[0]) &&
+        ((ballCurrentPosition[1] + ballDiameter) > blocks[i].bottomLeft[1] && ballCurrentPosition[1] < blocks[i].topLeft[1])
+    ) {
+        const allBlocks = Array.from(document.querySelectorAll('.block'))
+        allBlocks[i].classList.remove('block')
+        blocks.splice(i, 1)
+        changeDirection()
+        score++
+        scoreDisplay.innerHTML = score
+
+        if (blocks.length === 0){
+            scoreDisplay.innerHTML = 'You Win'
+            clearInterval(timerId)
+            document.removeEventListener('keydown', moveUser)
+        }
+    }
 }
 
+if (ballCurrentPosition[0] >= (boardWidth - ballDiameter) || 
+    ballCurrentPosition[1] >= (boardHeight - ballDiameter)||
+    ballCurrentPosition[0] <= 0){
+    changeDirection();
+}
+if (
+    (ballCurrentPosition[0] > currentPosition[0] && ballCurrentPosition[0] < currentPosition[0] + blockWidth) &&
+    (ballCurrentPosition[1] > currentPosition[1] && ballCurrentPosition[1] < currentPosition[1] + blockHeight) ){
+changeDirection()}
+
+if (ballCurrentPosition[1] <= 0){
+    clearInterval(timerId)
+    scoreDisplay.innerHTML = 'You lose'
+    document.removeEventListener('keydown', moveUser)
+}
+};
+
+
 function changeDirection() {
-    if(xDirection === 2 && yDirection === 2){
-        yDirection = -2
+    if(xDirection === 3 && yDirection === 3){
+        yDirection = -3
         return
     } 
-    if (xDirection === 2 && yDirection === -2){
-        xDirection = -2
+    if (xDirection === 3 && yDirection === -3){
+        xDirection = -3
         return
-    } if (xDirection === -2 && yDirection === -2){
-        yDirection = 2
+    } if (xDirection === -3 && yDirection === -3){
+        yDirection = 3
         return
-    } if (xDirection === -2 && yDirection ===2){
-        xDirection = 2 
+    } if (xDirection === -3 && yDirection ===3){
+        xDirection = 3 
         return
     }
 }
